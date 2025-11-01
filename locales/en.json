@@ -1,0 +1,21 @@
+{
+  "doctor_menu_title": "Doctor",
+  "menu_heal_title": "Get treated",
+  "menu_revive_title": "Get revived",
+  "healing": "Doctor is treating you...",
+  "reviving": "Doctor is reviving you...",
+  "healed": "You have been treated.",
+  "revived": "You have been revived.",
+  "you_are_dead": "You are dead. Ask for a revive.",
+  "not_dead": "You are not dead.",
+  "paid": "Paid $%s",
+  "not_enough_money": "You don't have enough money.",
+  "cost": "$",
+  "free": "Free",
+  "menu_shop_title": "Medical Supplies",
+  "menu_shop_desc": "Buy medical supplies",
+  "shop_title": "Medical Supplies Shop",
+  "menu_back": "Back",
+  "purchased": "Purchased %sx %s for $%s",
+  "purchase_failed": "Purchase failed. Inventory full?"
+}
