@@ -48,6 +48,16 @@ local function spawnDoctor(cfg)
     points[#points+1] = pt
 end
 
+-- blips
+CreateThread(function()
+    for _, v in pairs(Config.Doctors) do
+        local DoctorBlip = BlipAddForCoords(1664425300, v.coords)
+        SetBlipSprite(DoctorBlip, `blip_shop_doctor`, true)
+        SetBlipScale(DoctorBlip, 0.2)
+        SetBlipName(DoctorBlip, 'Doctor')
+    end
+end)
+
 -- Basic heal (client-side default). Override by listening to Config.Events.Heal
 RegisterNetEvent('rex-npcdoctor:client:heal', function()
     local ped = PlayerPedId()
