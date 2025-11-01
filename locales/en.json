@@ -17,5 +17,17 @@
   "shop_title": "Medical Supplies Shop",
   "menu_back": "Back",
   "purchased": "Purchased %sx %s for $%s",
-  "purchase_failed": "Purchase failed. Inventory full?"
+  "purchase_failed": "Purchase failed. Inventory full?",
+  "discord_medical_service_title": "💊 Medical Service Used",
+  "discord_medical_service_desc": "**%s** used a medical service",
+  "discord_item_purchase_title": "🛍️ Medical Item Purchased",
+  "discord_item_purchase_desc": "**%s** purchased a medical item",
+  "discord_field_character": "👤 Character",
+  "discord_field_citizenid": "🆔 Citizen ID",
+  "discord_field_amount_paid": "💵 Amount Paid",
+  "discord_field_service_type": "🏥 Service Type",
+  "discord_field_payment_method": "💰 Payment Method",
+  "discord_field_item": "📦 Item",
+  "discord_field_quantity": "🔢 Amount",
+  "discord_field_price": "💵 Price"
 }

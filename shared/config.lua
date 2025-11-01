@@ -8,6 +8,14 @@ Config.RevivePrice = 10     -- set to 0 to make free
 Config.ChargeOnServer = true -- set true to charge via server (prevents client-side exploits)
 Config.MoneyAccount = 'cash'  -- rsg-core account type if charging server-side
 
+-- Discord Webhook Settings
+Config.EnableDiscordLogs = true -- set to false to disable Discord logging
+Config.DiscordWebhook = 'YOUR_WEBHOOK_URL_HERE' -- Your Discord webhook URL
+Config.DiscordTitle = 'NPC Doctor Log'
+Config.DiscordColor = 3447003 -- Blue color (hex 0x3498DB)
+Config.DiscordFooter = 'RSG NPC Doctor System'
+Config.DiscordAvatar = '' -- Optional: custom avatar URL
+
 -- Integration events (override these to plug into your own medical system)
 Config.Events = {
     Heal = 'rex-npcdoctor:client:heal',       -- client event to perform a heal
@@ -59,7 +67,7 @@ Config.DrawTextDistance = 4.5
 Config.MedicalShop = {
     {
         item = 'bandage',
-        label = 'Field Bandage',
+        label = 'Bandage',
         price = 5,
         amount = 1,
         info = {},

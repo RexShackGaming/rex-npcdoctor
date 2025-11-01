@@ -111,7 +111,7 @@ function OpenDoctorMenu()
             icon = 'heart-pulse',
             onSelect = function()
                 if Config.ChargeOnServer and Config.RevivePrice > 0 then
-                    TriggerServerEvent('rex-npcdoctor:server:charge', Config.RevivePrice)
+                    TriggerServerEvent('rex-npcdoctor:server:charge', Config.RevivePrice, 'Revive')
                 end
                 TriggerEvent(Config.Events.Revive)
             end
@@ -123,7 +123,7 @@ function OpenDoctorMenu()
             icon = 'bandage',
             onSelect = function()
                 if Config.ChargeOnServer and Config.HealPrice > 0 then
-                    TriggerServerEvent('rex-npcdoctor:server:charge', Config.HealPrice)
+                    TriggerServerEvent('rex-npcdoctor:server:charge', Config.HealPrice, 'Heal')
                 end
                 TriggerEvent(Config.Events.Heal)
             end
