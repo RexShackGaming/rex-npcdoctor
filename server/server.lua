@@ -52,12 +52,12 @@ RegisterNetEvent('rex-npcdoctor:server:charge', function(amount, actionType)
 
     if hadEnough then
         -- Success notification
-        TriggerClientEvent('ox_lib:notify', src, {
-            title = locale('paid_title') or 'Payment Successful',
-            description = locale('paid', amount),
-            type = 'success',
-            duration = 5000
-        })
+         TriggerClientEvent('ox_lib:notify', src, {
+             title = locale('paid_title'),
+             description = locale('paid', amount),
+             type = 'success',
+             duration = 5000
+         })
 
         -- Perform the actual action
         if actionType == 'Revive' then
@@ -80,18 +80,18 @@ RegisterNetEvent('rex-npcdoctor:server:charge', function(amount, actionType)
                 { name = locale('discord_field_citizenid'), value = Player.PlayerData.citizenid or 'N/A', inline = true },
                 { name = locale('discord_field_amount_paid'), value = '$'..amount, inline = true },
                 { name = locale('discord_field_service_type'), value = actionType, inline = true },
-                { name = locale('discord_field_payment_method'), value = moneyType:title(), inline = true },
+                { name = locale('discord_field_payment_method'), value = moneyType:sub(1, 1):upper() .. moneyType:sub(2), inline = true },
                 { name = locale('discord_field_serverid'), value = tostring(src), inline = true },
             }
         )
     else
         -- Not enough money
-        TriggerClientEvent('ox_lib:notify', src, {
-            title = locale('not_enough_money_title') or 'Insufficient Funds',
-            description = locale('not_enough_money'),
-            type = 'error',
-            duration = 6000
-        })
+         TriggerClientEvent('ox_lib:notify', src, {
+             title = locale('not_enough_money_title'),
+             description = locale('not_enough_money'),
+             type = 'error',
+             duration = 6000
+         })
     end
 end)
 

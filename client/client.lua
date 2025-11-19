@@ -30,7 +30,7 @@ local function spawnDoctor(cfg)
     })
 
     function pt:onEnter()
-        lib.showTextUI(Config.PromptText)
+        lib.showTextUI(locale('prompt'))
     end
 
     function pt:onExit()
@@ -54,7 +54,7 @@ CreateThread(function()
         local DoctorBlip = BlipAddForCoords(1664425300, v.coords)
         SetBlipSprite(DoctorBlip, `blip_shop_doctor`, true)
         SetBlipScale(DoctorBlip, 0.2)
-        SetBlipName(DoctorBlip, 'Doctor')
+         SetBlipName(DoctorBlip, locale('blip_name'))
     end
 end)
 
@@ -100,42 +100,61 @@ RegisterNetEvent('rex-npcdoctor:client:revive', function()
 end)
 
 function OpenDoctorMenu()
-    local ped = PlayerPedId()
-    if not ped or not DoesEntityExist(ped) then return end -- Safety check
+     local ped = PlayerPedId()
+     if not ped or not DoesEntityExist(ped) then return end -- Safety check
 
-    local isDead = IsEntityDead(ped) or IsPedFatallyInjured(ped, false)
-    local options = {}
+     local isDead = IsEntityDead(ped) or IsPedFatallyInjured(ped, false)
+     local options = {}
 
-    if isDead then
-        table.insert(options, {
-            title = locale('menu_revive_title'),
-            description = Config.RevivePrice > 0 and (locale('cost'):format(Config.RevivePrice)) or locale('free'),
-            icon = 'heart-pulse',
-            iconColor = '#ff4444',
-            onSelect = function()
-                -- Optional: add client-side price check before charging
-                if Config.ChargeOnServer and Config.RevivePrice > 0 then
-                    TriggerServerEvent('rex-npcdoctor:server:charge', Config.RevivePrice, 'Revive')
-                else
-                    TriggerEvent(Config.Events.Revive)
-                end
-            end
-        })
-    else
-        -- Heal option
-        table.insert(options, {
-            title = locale('menu_heal_title'),
-            description = Config.HealPrice > 0 and (locale('cost'):format(Config.HealPrice)) or locale('free'),
-            icon = 'bandage',
-            iconColor = '#44ff44',
-            onSelect = function()
-                if Config.ChargeOnServer and Config.HealPrice > 0 then
-                    TriggerServerEvent('rex-npcdoctor:server:charge', Config.HealPrice, 'Heal')
-                else
-                    TriggerEvent(Config.Events.Heal)
-                end
-            end
-        })
+     if isDead then
+         table.insert(options, {
+             title = locale('menu_revive_title'),
+             description = Config.RevivePrice > 0 and (locale('cost_format'):format(Config.RevivePrice)) or locale('free'),
+             icon = 'heart-pulse',
+             iconColor = '#ff4444',
+             onSelect = function()
+                 -- Optional: add client-side price check before charging
+                 if Config.ChargeOnServer and Config.RevivePrice > 0 then
+                     TriggerServerEvent('rex-npcdoctor:server:charge', Config.RevivePrice, 'Revive')
+                 else
+                     TriggerEvent(Config.Events.Revive)
+                 end
+             end
+         })
+     else
+         -- Calculate health percentage and dynamic cost
+         local currentHealth = GetEntityHealth(ped)
+         local maxHealth = GetEntityMaxHealth(ped)
+         local healthPercentage = (currentHealth / maxHealth) * 100
+
+         -- Check if player is already at full health
+         if healthPercentage >= 100 then
+             table.insert(options, {
+                 title = locale('menu_heal_title'),
+                 description = locale('already_healed'),
+                 icon = 'bandage',
+                 iconColor = '#888888',
+                 disabled = true,
+             })
+         else
+             -- Calculate damage percentage and charge proportionally
+             local damagePercentage = 100 - healthPercentage
+             local chargeCost = math.ceil((Config.HealPrice / 100) * damagePercentage)
+
+             table.insert(options, {
+                 title = locale('menu_heal_title'),
+                 description = Config.HealPrice > 0 and (locale('cost_format'):format(chargeCost)) or locale('free'),
+                 icon = 'bandage',
+                 iconColor = '#44ff44',
+                 onSelect = function()
+                     if Config.ChargeOnServer and Config.HealPrice > 0 then
+                         TriggerServerEvent('rex-npcdoctor:server:charge', chargeCost, 'Heal')
+                     else
+                         TriggerEvent(Config.Events.Heal)
+                     end
+                 end
+             })
+         end
 
         -- Medical shop
         table.insert(options, {
@@ -168,13 +187,13 @@ function OpenMedicalShop()
     
     for _, item in ipairs(Config.MedicalShop) do
         shopOptions[#shopOptions+1] = {
-            title = item.label,
-            description = locale('cost') .. item.price,
-            icon = item.icon,
-            onSelect = function()
-                TriggerServerEvent('rex-npcdoctor:server:purchaseItem', item)
-            end
-        }
+             title = item.label,
+             description = locale('cost_format'):format(item.price),
+             icon = item.icon,
+             onSelect = function()
+                 TriggerServerEvent('rex-npcdoctor:server:purchaseItem', item)
+             end
+         }
     end
     
     shopOptions[#shopOptions+1] = {

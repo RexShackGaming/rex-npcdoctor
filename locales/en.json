@@ -11,6 +11,7 @@
   "paid": "Paid $%s",
   "not_enough_money": "You don't have enough money.",
   "cost": "$",
+  "cost_format": "${%s}",
   "free": "Free",
   "menu_shop_title": "Medical Supplies",
   "menu_shop_desc": "Buy medical supplies",
@@ -30,5 +31,11 @@
   "discord_field_item": "📦 Item",
   "discord_field_quantity": "🔢 Amount",
   "discord_field_price": "💵 Price",
-  "discord_field_serverid": "Server ID"
+  "discord_field_serverid": "Server ID",
+  "paid_title": "Payment Successful",
+  "not_enough_money_title": "Insufficient Funds",
+  "blip_name": "Doctor",
+  "cost_format": "$%s",
+  "prompt": "Press J to talk to the doctor",
+  "already_healed": "You are already at full health"
 }
