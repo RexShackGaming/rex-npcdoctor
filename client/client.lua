@@ -101,48 +101,65 @@ end)
 
 function OpenDoctorMenu()
     local ped = PlayerPedId()
-    local dead = (IsEntityDead(ped) or IsPedFatallyInjured(ped))
+    if not ped or not DoesEntityExist(ped) then return end -- Safety check
 
+    local isDead = IsEntityDead(ped) or IsPedFatallyInjured(ped, false)
     local options = {}
-    if dead then
-        options[#options+1] = {
+
+    if isDead then
+        table.insert(options, {
             title = locale('menu_revive_title'),
-            description = (Config.RevivePrice > 0) and (locale('cost') .. Config.RevivePrice) or locale('free'),
+            description = Config.RevivePrice > 0 and (locale('cost'):format(Config.RevivePrice)) or locale('free'),
             icon = 'heart-pulse',
+            iconColor = '#ff4444',
             onSelect = function()
+                -- Optional: add client-side price check before charging
                 if Config.ChargeOnServer and Config.RevivePrice > 0 then
                     TriggerServerEvent('rex-npcdoctor:server:charge', Config.RevivePrice, 'Revive')
+                else
+                    TriggerEvent(Config.Events.Revive)
                 end
-                TriggerEvent(Config.Events.Revive)
             end
-        }
+        })
     else
-        options[#options+1] = {
+        -- Heal option
+        table.insert(options, {
             title = locale('menu_heal_title'),
-            description = (Config.HealPrice > 0) and (locale('cost') .. Config.HealPrice) or locale('free'),
+            description = Config.HealPrice > 0 and (locale('cost'):format(Config.HealPrice)) or locale('free'),
             icon = 'bandage',
+            iconColor = '#44ff44',
             onSelect = function()
                 if Config.ChargeOnServer and Config.HealPrice > 0 then
                     TriggerServerEvent('rex-npcdoctor:server:charge', Config.HealPrice, 'Heal')
+                else
+                    TriggerEvent(Config.Events.Heal)
                 end
-                TriggerEvent(Config.Events.Heal)
             end
-        }
-        options[#options+1] = {
+        })
+
+        -- Medical shop
+        table.insert(options, {
             title = locale('menu_shop_title'),
             description = locale('menu_shop_desc'),
             icon = 'shopping-bag',
+            iconColor = '#44aaff',
+            arrow = true, -- visual indicator that it opens another menu
             onSelect = function()
                 OpenMedicalShop()
             end
-        }
+        })
     end
 
     lib.registerContext({
         id = 'rex_npcdoctor_menu',
         title = locale('doctor_menu_title'),
+        menu = 'rex_npcdoctor_menu', -- allows going back if nested
+        onExit = function()
+            -- Optional: play animation cancel or sound
+        end,
         options = options
     })
+
     lib.showContext('rex_npcdoctor_menu')
 end
 

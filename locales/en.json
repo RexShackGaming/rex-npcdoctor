@@ -29,5 +29,6 @@
   "discord_field_payment_method": "💰 Payment Method",
   "discord_field_item": "📦 Item",
   "discord_field_quantity": "🔢 Amount",
-  "discord_field_price": "💵 Price"
+  "discord_field_price": "💵 Price",
+  "discord_field_serverid": "Server ID"
 }

@@ -32,34 +32,66 @@ local function SendDiscordLog(title, description, color, fields)
 end
 
 RegisterNetEvent('rex-npcdoctor:server:charge', function(amount, actionType)
-    if not Config.ChargeOnServer or (amount or 0) <= 0 then return end
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
+    
+    -- Basic validation
     if not Player then return end
+    if not Config.ChargeOnServer then return end
+    amount = tonumber(amount) or 0
+    if amount <= 0 then return end
 
-    if Player.Functions.RemoveMoney(Config.MoneyAccount or 'cash', amount) then
-        TriggerClientEvent('ox_lib:notify', src, { description = locale('paid', amount), type = 'inform' })
-        
-        -- Discord Log
-        local citizenid = Player.PlayerData.citizenid or 'Unknown'
-        local charname = Player.PlayerData.charinfo.firstname .. ' ' .. Player.PlayerData.charinfo.lastname
-        local action = actionType or 'Medical Service'
-        
+    -- Whitelist allowed action types (security)
+    local validActions = { Heal = true, Revive = true }
+    if not validActions[actionType] then
+        actionType = 'Unknown'
+    end
+
+    local moneyType = Config.MoneyAccount or 'cash'
+    local hadEnough = Player.Functions.RemoveMoney(moneyType, amount)
+
+    if hadEnough then
+        -- Success notification
+        TriggerClientEvent('ox_lib:notify', src, {
+            title = locale('paid_title') or 'Payment Successful',
+            description = locale('paid', amount),
+            type = 'success',
+            duration = 5000
+        })
+
+        -- Perform the actual action
+        if actionType == 'Revive' then
+            TriggerClientEvent(Config.Events.Revive, src)
+        elseif actionType == 'Heal' then
+            TriggerClientEvent(Config.Events.Heal, src)
+        end
+
+        -- Discord logging
+        local charinfo = Player.PlayerData.charinfo
+        local charname = ('%s %s'):format(charinfo.firstname or '', charinfo.lastname or ''):gsub('^%s+', ''):gsub('%s+$', '')
+        if charname == '' then charname = 'Unknown' end
+
         SendDiscordLog(
             locale('discord_medical_service_title'),
             locale('discord_medical_service_desc', charname),
-            3066993, -- Green
+            5767168, -- Nice teal/green
             {
                 { name = locale('discord_field_character'), value = charname, inline = true },
-                { name = locale('discord_field_citizenid'), value = citizenid, inline = true },
-                { name = locale('discord_field_amount_paid'), value = '$' .. amount, inline = true },
-                { name = locale('discord_field_service_type'), value = action, inline = true },
-                { name = locale('discord_field_payment_method'), value = Config.MoneyAccount, inline = true },
+                { name = locale('discord_field_citizenid'), value = Player.PlayerData.citizenid or 'N/A', inline = true },
+                { name = locale('discord_field_amount_paid'), value = '$'..amount, inline = true },
+                { name = locale('discord_field_service_type'), value = actionType, inline = true },
+                { name = locale('discord_field_payment_method'), value = moneyType:title(), inline = true },
+                { name = locale('discord_field_serverid'), value = tostring(src), inline = true },
             }
         )
     else
-        TriggerClientEvent('ox_lib:notify', src, { description = locale('not_enough_money'), type = 'error' })
-        -- Optional: prevent action if not enough money; up to your integration
+        -- Not enough money
+        TriggerClientEvent('ox_lib:notify', src, {
+            title = locale('not_enough_money_title') or 'Insufficient Funds',
+            description = locale('not_enough_money'),
+            type = 'error',
+            duration = 6000
+        })
     end
 end)
 
