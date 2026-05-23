@@ -361,14 +361,15 @@ rex-npcdoctor/
 
 ---
 
-## Support & Credits
+## Support
 
-- **Framework:** RSG Framework
-- **UI Library:** ox_lib
-- **Game:** Red Dead Redemption 2 (RedM)
+- [RSG Discord](https://discord.gg/eW3ADkf4Af)
 
-For issues or feature requests, check your server logs for error messages.
+## License
+
+This project is licensed under the terms specified in the LICENSE file.
 
 ---
 
-*Last Updated: 2024*
+**Author:** RexShack
+**Support Me:** [Buy me a Beer](https://buymeacoffee.com/rexshack)
